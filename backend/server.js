@@ -59,6 +59,20 @@ app.patch('/api/reviews/:id/helpful', async (req, res) => {
   }
 });
 
+// Get all scam numbers
+app.get('/api/scam-numbers', async (req, res) => {
+  try {
+    // Find all reviews that are negative (scam)
+    const scamReviews = await Review.find({ type: 'negative' })
+      .select('phoneNumber -_id') // Only get phone numbers, exclude _id
+      .distinct('phoneNumber'); // Get unique numbers only
+    
+    res.json(scamReviews);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Servir les fichiers statiques du dossier public
 app.use(express.static('public'));
 

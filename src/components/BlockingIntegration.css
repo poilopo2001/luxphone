@@ -1,0 +1,52 @@
+.blocking-integration {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.blocking-integration h3 {
+  color: #dc3545;
+  margin-bottom: 15px;
+}
+
+.blocking-buttons {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.block-button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.block-button.primary {
+  background-color: #dc3545;
+  color: white;
+}
+
+.block-button.primary:hover {
+  background-color: #c82333;
+}
+
+.block-button.secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.block-button.secondary:hover {
+  background-color: #5a6268;
+}
+
+.blocking-note {
+  font-size: 0.9em;
+  color: #6c757d;
+  margin-top: 10px;
+}

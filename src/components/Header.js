@@ -8,10 +8,11 @@ const Header = () => {
       <nav>
         <Link to="/" className="logo">📞 LuxNumbers</Link>
         <ul>
-          <li><Link to="/">Accueil</Link></li>
+          <li><Link to="/" className="nav-link">Accueil</Link></li>
           <li><Link to="/about">À propos</Link></li>
           <li><Link to="/contact">Contact</Link></li>
           <li><Link to="/signaler">Signaler un numéro</Link></li>
+          <li><Link to="/block-scam" className="nav-link">Bloquer les spams</Link></li>
         </ul>
       </nav>
     </header>

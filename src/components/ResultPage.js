@@ -6,6 +6,8 @@ import Header from './Header';
 import Footer from './Footer';
 import SEO from './SEO';
 import './ResultPage.css';
+import BlockingIntegration from './BlockingIntegration';
+import './BlockingIntegration.css';
 
 const API_URL = 'http://localhost:5000/api';
 
@@ -65,7 +67,15 @@ const ResultPage = () => {
     if (reviewType === 'positive') {
       reviewText = `Numéro vérifié comme ${subType}`;
     } else {
-      reviewText = `Attention: Ce numéro a été signalé pour ${subType}`;
+      const descriptions = {
+        'Arnaque Bancaire': 'Ce numéro a été signalé pour tentative de fraude bancaire. Se fait passer pour une banque et demande des informations sensibles.',
+        'Fraude Énergétique': 'Faux agent énergétique tentant d\'obtenir des informations ou un accès au compteur.',
+        'Fraude Fiscale': 'Se fait passer pour l\'Administration des Contributions Directes.',
+        'Arnaque Colis': 'Faux message concernant un colis avec demande de paiement.',
+        'Démarchage': 'Appels répétés pour du démarchage commercial non sollicité.',
+        'Autre Arnaque': 'Attention: Ce numéro a été signalé comme suspect.'
+      };
+      reviewText = descriptions[subType] || `Attention: Ce numéro a été signalé pour ${subType}`;
     }
     handleSubmitReview(reviewText);
   };
@@ -97,6 +107,23 @@ const ResultPage = () => {
     }
   };
 
+  const handleScroll = (direction) => {
+    const container = document.querySelector('.quick-review-buttons');
+    const scrollAmount = 240; // Twice the width of a button
+    if (container) {
+      container.scrollBy({
+        left: direction === 'right' ? scrollAmount : -scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  const resetReview = () => {
+    setReviewType('');
+    setReviewSubType('');
+    setShowReviewForm(false);
+  };
+
   const renderReviewButtons = () => {
     if (!showReviewForm) {
       return (
@@ -119,63 +146,83 @@ const ResultPage = () => {
       );
     }
 
-    if (reviewType === 'positive') {
-      return (
-        <div className="quick-review-buttons">
-          <button
-            className="quick-review-btn"
-            onClick={() => handleSubTypeSelect('Entreprise Légitime')}
-          >
-            <span className="icon">🏢</span>
-            <span className="text">Entreprise Légitime</span>
-          </button>
-          <button
-            className="quick-review-btn"
-            onClick={() => handleSubTypeSelect('Service Public')}
-          >
-            <span className="icon">🏛️</span>
-            <span className="text">Service Public</span>
-          </button>
+    return (
+      <div className="review-selection">
+        <div className="quick-review-container">
+          {reviewType === 'positive' ? (
+            <div className="quick-review-buttons">
+              <button
+                className="quick-review-btn"
+                onClick={() => handleSubTypeSelect('Entreprise Légitime')}
+              >
+                <span className="icon">🏢</span>
+                <span className="text">Entreprise Légitime</span>
+              </button>
+              <button
+                className="quick-review-btn"
+                onClick={() => handleSubTypeSelect('Service Public')}
+              >
+                <span className="icon">🏛️</span>
+                <span className="text">Service Public</span>
+              </button>
+            </div>
+          ) : (
+            <div className="quick-review-buttons">
+              <button
+                className="quick-review-btn negative"
+                onClick={() => handleSubTypeSelect('Arnaque Bancaire')}
+              >
+                <span className="icon">🏦</span>
+                <span className="text">Arnaque Bancaire</span>
+              </button>
+              <button
+                className="quick-review-btn negative"
+                onClick={() => handleSubTypeSelect('Fraude Énergétique')}
+              >
+                <span className="icon">⚡</span>
+                <span className="text">Fraude Énergétique</span>
+              </button>
+              <button
+                className="quick-review-btn negative"
+                onClick={() => handleSubTypeSelect('Fraude Fiscale')}
+              >
+                <span className="icon">📑</span>
+                <span className="text">Fraude Fiscale</span>
+              </button>
+              <button
+                className="quick-review-btn negative"
+                onClick={() => handleSubTypeSelect('Arnaque Colis')}
+              >
+                <span className="icon">📦</span>
+                <span className="text">Arnaque Colis</span>
+              </button>
+              <button
+                className="quick-review-btn negative"
+                onClick={() => handleSubTypeSelect('Démarchage')}
+              >
+                <span className="icon">📞</span>
+                <span className="text">Démarchage</span>
+              </button>
+              <button
+                className="quick-review-btn negative"
+                onClick={() => handleSubTypeSelect('Autre Arnaque')}
+              >
+                <span className="icon">⚠️</span>
+                <span className="text">Autre Arnaque</span>
+              </button>
+            </div>
+          )}
         </div>
-      );
-    }
-
-    if (reviewType === 'negative') {
-      return (
-        <div className="quick-review-buttons">
-          <button
-            className="quick-review-btn negative"
-            onClick={() => handleSubTypeSelect('Phishing')}
-          >
-            <span className="icon">🎣</span>
-            <span className="text">Phishing</span>
-          </button>
-          <button
-            className="quick-review-btn negative"
-            onClick={() => handleSubTypeSelect('Spam')}
-          >
-            <span className="icon">📧</span>
-            <span className="text">Spam</span>
-          </button>
-          <button
-            className="quick-review-btn negative"
-            onClick={() => handleSubTypeSelect('Démarchage')}
-          >
-            <span className="icon">📞</span>
-            <span className="text">Démarchage</span>
-          </button>
-          <button
-            className="quick-review-btn negative"
-            onClick={() => handleSubTypeSelect('Arnaque')}
-          >
-            <span className="icon">⚠️</span>
-            <span className="text">Arnaque</span>
-          </button>
-        </div>
-      );
-    }
-
-    return null;
+        <button 
+          className="back-button" 
+          onClick={resetReview}
+          aria-label="Retour au choix précédent"
+        >
+          <span className="icon">↩️</span>
+          <span className="text">Retour</span>
+        </button>
+      </div>
+    );
   };
 
   const handleHelpful = async (reviewId) => {
@@ -321,13 +368,11 @@ const ResultPage = () => {
       <main className="result-container">
         {showReviewForm && (
           <div className="mobile-review-form">
-            <form onSubmit={(e) => e.preventDefault()}>
-              <input type="text" name="honeypot1" style={{ display: 'none' }} tabIndex="-1" autoComplete="off" />
-              <input type="text" name="honeypot2" style={{ display: 'none' }} tabIndex="-1" autoComplete="off" />
-            </form>
+            <form onSubmit={(e) => e.preventDefault()}></form>
           </div>
         )}
-
+        <BlockingIntegration phoneNumber={numero} />
+        
         <div className="content-grid">
           <div className="main-content">
             <div className="stats-grid">
@@ -393,8 +438,7 @@ const ResultPage = () => {
                 <p className="trend-description">
                   {trends.recentTotal === 0 
                     ? "Aucun avis ce mois-ci" 
-                    : `${trends.recentTrend}% des ${trends.recentTotal} avis récents sont positifs`
-                  }
+                    : `${trends.recentTrend}% des ${trends.recentTotal} avis récents sont positifs`}
                 </p>
               </div>
               <Line data={chartData} />
